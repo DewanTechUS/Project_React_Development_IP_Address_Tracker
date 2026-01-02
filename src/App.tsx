@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import SearchBar from "./components/SearchBar";
 import InfoCard from "./components/InfoCard";
+import MapView from "./components/MapView";
 import ThemeToggle from "./components/ThemeToggle";
 import { ThemeProvider } from "./context/ThemeContext";
 import { useIpify } from "./hooks/useIpify";
@@ -21,7 +22,7 @@ function AppShell() {
 
   useEffect(() => {
     lookup({ type: "auto" });
-
+   
   }, []);
 
   const locationLabel = useMemo(() => {
@@ -38,6 +39,9 @@ function AppShell() {
   }, [data]);
 
   const ispLabel = data?.isp ?? "—";
+
+  const lat = data?.location?.lat ?? 0;
+  const lng = data?.location?.lng ?? 0;
 
   function onSubmitSearch(value: string) {
     setLastSearched(value);
@@ -93,7 +97,7 @@ function AppShell() {
       </header>
 
       <main className="mapWrap" aria-label="Map showing IP location">
-        
+        <MapView lat={lat} lng={lng} />
       </main>
     </div>
   );
