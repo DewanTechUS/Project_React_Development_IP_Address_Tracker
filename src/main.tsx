@@ -5,6 +5,8 @@ import "./index.css";
 
 import { ThemeProvider } from "./context/ThemeContext";
 
+import "leaflet/dist/leaflet.css";
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ThemeProvider>
