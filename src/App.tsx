@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import SearchBar from "./components/SearchBar";
+import InfoCard from "./components/InfoCard";
 import ThemeToggle from "./components/ThemeToggle";
 import { ThemeProvider } from "./context/ThemeContext";
 import { useIpify } from "./hooks/useIpify";
@@ -18,11 +19,25 @@ function AppShell() {
   const [query, setQuery] = useState("");
   const [lastSearched, setLastSearched] = useState("");
 
-
   useEffect(() => {
     lookup({ type: "auto" });
- 
+
   }, []);
+
+  const locationLabel = useMemo(() => {
+    if (!data) return "—";
+    const city = data.location?.city ?? "";
+    const region = data.location?.region ?? "";
+    const country = data.location?.country ?? "";
+    return [city, region, country].filter(Boolean).join(", ") || "—";
+  }, [data]);
+
+  const timezoneLabel = useMemo(() => {
+    const tz = data?.location?.timezone;
+    return tz ? `UTC ${tz}` : "—";
+  }, [data]);
+
+  const ispLabel = data?.isp ?? "—";
 
   function onSubmitSearch(value: string) {
     setLastSearched(value);
@@ -45,6 +60,20 @@ function AppShell() {
           disabled={loading}
           placeholder="Search for any IP address or domain"
         />
+
+        <section
+          className="panel"
+          aria-live="polite"
+          aria-busy={loading ? "true" : "false"}
+        >
+          <InfoCard
+            label="IP Address"
+            value={data?.ip ?? (loading ? "Loading…" : "—")}
+          />
+          <InfoCard label="Location" value={locationLabel} />
+          <InfoCard label="Timezone" value={timezoneLabel} />
+          <InfoCard label="ISP" value={ispLabel} />
+        </section>
 
         <div className="status">
           {error ? (
