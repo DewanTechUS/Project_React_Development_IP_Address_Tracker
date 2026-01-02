@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SearchBar from "./components/SearchBar";
 import ThemeToggle from "./components/ThemeToggle";
 import { ThemeProvider } from "./context/ThemeContext";
+import { useIpify } from "./hooks/useIpify";
 
 export default function App() {
   return (
@@ -12,10 +13,20 @@ export default function App() {
 }
 
 function AppShell() {
+  const { data, loading, error, lookup } = useIpify();
+
   const [query, setQuery] = useState("");
+  const [lastSearched, setLastSearched] = useState("");
+
+
+  useEffect(() => {
+    lookup({ type: "auto" });
+ 
+  }, []);
 
   function onSubmitSearch(value: string) {
-    // i will trigger the search functionality here later // for now just clear the input
+    setLastSearched(value);
+    lookup({ type: "query", value });
     setQuery("");
   }
 
@@ -31,9 +42,25 @@ function AppShell() {
           value={query}
           onChange={setQuery}
           onSubmit={onSubmitSearch}
-          disabled={false}
+          disabled={loading}
           placeholder="Search for any IP address or domain"
         />
+
+        <div className="status">
+          {error ? (
+            <p className="error" role="alert">
+              {error}
+            </p>
+          ) : loading ? (
+            <p className="muted">Fetching results…</p>
+          ) : lastSearched ? (
+            <p className="muted">
+              Showing results for: <strong>{lastSearched}</strong>
+            </p>
+          ) : (
+            <p className="muted">Showing your current IP info.</p>
+          )}
+        </div>
       </header>
 
       <main className="mapWrap" aria-label="Map showing IP location">
