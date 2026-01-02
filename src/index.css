@@ -1,3 +1,31 @@
+.themeSwitch {
+  width: 46px;
+  height: 26px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--panel2);
+  padding: 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background 0.25s ease;
+}
+
+.themeSwitch.on {
+  background: #22c55e; 
+}
+
+.switchThumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: white;
+  transition: transform 0.25s ease;
+}
+
+.themeSwitch.on .switchThumb {
+  transform: translateX(20px);
+}
 :root {
   font-family: system-ui, Arial, sans-serif;
 }
