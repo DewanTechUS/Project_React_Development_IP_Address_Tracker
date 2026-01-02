@@ -9,6 +9,7 @@ export default function InfoCards({ data }: Props) {
   const location = data
     ? `${data.location.city}, ${data.location.region} ${data.location.country}`
     : "—";
+    
   const timezone = data?.location.timezone ? `UTC ${data.location.timezone}` : "—";
   const isp = data?.isp ?? "—";
 
