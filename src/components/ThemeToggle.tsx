@@ -4,8 +4,8 @@ export default function ThemeToggle() {
   const { theme, toggle } = useTheme();
 
   return (
-    <button className="themeBtn" onClick={toggle} type="button" aria-label="Toggle theme">
-      {theme === "light" ? "dark" : "light"} 
+    <button onClick={toggle} className="themeBtn">
+      {theme === "dark" ? " Light" : " Dark"}
     </button>
   );
 }
