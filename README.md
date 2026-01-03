@@ -49,6 +49,7 @@ VITE_IPIFY_API_KEY=DEWAN_MAHMUD_ROCKY
 The .env file is intentionally not committed to version control and is included in .gitignore to keep sensitive keys private.
 
 # Getting Started (Local Setup)
+
 1. Clone the repository
 git clone https://github.com/DewanTechUS/Project_React_Development_IP_Address_Tracker
 cd  (to the root)
@@ -78,3 +79,9 @@ This project builds on work I initially started during an earlier SBA, which all
 Through this project, I reinforced core React concepts such as component composition, state management with hooks, handling side effects with useEffect, and managing global state using the Context API. Integrating an external API and rendering location data on an interactive map deepened my understanding of asynchronous data fetching, loading states, and error handling. One notable challenge was keeping the map view synchronized with updated API results, which I resolved by dynamically re-centering the Leaflet map whenever new coordinates were received. Implementing a light and dark theme using CSS variables and persistent state further strengthened my understanding of global UI state management.
 
 Looking ahead, I would enhance this project by adding search history, improving accessibility, and providing more detailed, user-friendly error feedback. These improvements would help make the application more robust, inclusive, and production-ready.
+
+# Project Planning
+
+The initial planning and breakdown for this project is documented in the file below:
+
+Project_Planning.md - outlines the project goals, scope, feature breakdown, development phases, and future enhancements.
