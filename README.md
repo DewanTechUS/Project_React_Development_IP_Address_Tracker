@@ -1,6 +1,7 @@
 # React Development Project - IP Address Tracker
 
 # Author
+
 Dewan Mahmud (Rocky)
 Software Engineer in Training - Per Scholas
 
@@ -80,8 +81,16 @@ Through this project, I reinforced core React concepts such as component composi
 
 Looking ahead, I would enhance this project by adding search history, improving accessibility, and providing more detailed, user-friendly error feedback. These improvements would help make the application more robust, inclusive, and production-ready.
 
+# Special Thanks
+
+Special thanks to Tishana Trainor and Bryan Santos for their clear instruction, guidance, and support throughout my JavaScript and frontend development learning journey.
+
+Grateful as well to the Per Scholas community for providing a structured and supportive learning environment.
+
+
 # Project Planning
 
 The initial planning and breakdown for this project is documented in the file below:
 
 Project_Planning.md - outlines the project goals, scope, feature breakdown, development phases, and future enhancements.
+
