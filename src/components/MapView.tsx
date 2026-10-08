@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import type { IpifyResponse } from "../lib/types";
 import L from "leaflet";
@@ -12,9 +13,14 @@ L.Icon.Default.mergeOptions({
   shadowUrl: shadow,
 });
 
+// Fallback center shown until the first lookup resolves.
+const DEFAULT_CENTER: [number, number] = [37.3861, -122.0839];
+
 function Recenter({ lat, lng }: { lat: number; lng: number }) {
   const map = useMap();
-  map.setView([lat, lng], map.getZoom(), { animate: true });
+  useEffect(() => {
+    map.setView([lat, lng], map.getZoom(), { animate: true });
+  }, [map, lat, lng]);
   return null;
 }
 
@@ -23,33 +29,27 @@ type Props = {
 };
 
 export default function MapView({ data }: Props) {
-  
-  const lat = data?.location.lat ?? 37.3861; 
-  const lng = data?.location.lng ?? -122.0839;
+  const lat = data?.location.lat ?? DEFAULT_CENTER[0];
+  const lng = data?.location.lng ?? DEFAULT_CENTER[1];
 
   return (
-    <div className="mapWrap" aria-label="Map">
-      <MapContainer center={[lat, lng] as [number, number]} zoom={13} className="map">
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
+    <MapContainer center={[lat, lng]} zoom={13} className="map">
+      <TileLayer
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      />
+      {data ? (
         <Marker position={[lat, lng]}>
           <Popup>
-            {data ? (
-              <div>
-                <strong>{data.ip}</strong>
-                <div>
-                  {data.location.city}, {data.location.region} {data.location.country}
-                </div>
-              </div>
-            ) : (
-              "Default location"
-            )}
+            <strong>{data.ip}</strong>
+            <div>
+              {[data.location.city, data.location.region, data.location.country].filter(Boolean).join(", ")}
+            </div>
           </Popup>
         </Marker>
+      ) : null}
 
-        <Recenter lat={lat} lng={lng} />
-      </MapContainer>
-    </div>
+      <Recenter lat={lat} lng={lng} />
+    </MapContainer>
   );
 }

@@ -1,96 +1,137 @@
-# React Development Project - IP Address Tracker
+# IP Address Tracker — DewanTech™
 
-# Author
+A DewanTech™ product by Dewan Global LLC. A responsive web application for looking up any IPv4 address, IPv6 address or domain name and viewing its location, timezone and internet service provider on an interactive map.
 
-Dewan Mahmud (Rocky)
-Software Engineer in Training - Per Scholas
+**Live application:** https://project-react-development-ip-address.onrender.com/
+**Source code:** https://github.com/DewanTechUS/Project_React_Development_IP_Address_Tracker
 
-## Live Demo
+---
 
-https://dewantechus.netlify.app/
+## Features
 
-## Repository
+- **IP and domain search.** Accepts IPv4, IPv6 and domain names. Full URLs such as `https://example.com/page` are reduced to their host automatically.
+- **Automatic lookup on load.** The visitor's own public IP is shown when the page opens. Submitting an empty search looks it up again.
+- **Geolocation results.** IP address, city, region, country, UTC offset and ISP.
+- **Interactive map.** A Leaflet and OpenStreetMap map that re-centers on each result, with a marker and popup.
+- **Loading and error handling.**
+  - Placeholder skeletons and a spinner while data loads.
+  - Input is validated before any request is sent.
+  - Clear messages for invalid input, unknown hosts, API key problems, rate limits and network failures.
+- **Request cancellation.** Starting a new search cancels the previous one, so an older, slower response can never overwrite a newer result.
+- **Persistent light and dark themes.** The choice is saved in `localStorage` and applied before first paint, so the page never flashes the wrong theme.
+- **Responsive layout.** Works on mobile, tablet and desktop.
+- **Accessibility.**
+  - Skip-to-content link, labelled search field and visible keyboard focus styles.
+  - The theme switch is exposed to screen readers as a switch.
+  - Loading state is announced and errors are read aloud.
+  - Reduced-motion preferences are respected.
 
-GitHub: https://github.com/DewanTechUS/Project_React_Development_IP_Address_Tracker
+## Tech Stack
 
-# Project Overview
+| Area | Technology |
+| --- | --- |
+| UI | React 19 (function components and hooks) |
+| Language | TypeScript (strict mode) |
+| Build tooling | Vite |
+| State | `useState`, `useEffect`, a custom `useIpify` hook, Context API for theme |
+| Maps | Leaflet, react-leaflet, OpenStreetMap tiles |
+| Data | IPify Geolocation API |
+| Styling | Plain CSS with custom properties (no UI framework) |
+| Quality | ESLint with TypeScript, React Hooks and React Refresh rules |
 
-This project is a responsive IP Address Tracker built with React and TypeScript. It allows users to search for any IP address or domain name and view its geographic location on an interactive map. The application integrates with the IPify Geolocation API for data retrieval and LeafletJS for real-time map rendering. It also includes light and dark theme support using React Context and CSS variables.
+## Project Structure
 
-# Features
+```
+src/
+├── App.tsx                  Page layout; wires the search to the data hook
+├── main.tsx                 Entry point; ThemeProvider and global styles
+├── index.css                Design tokens, themes and responsive styles
+├── assets/                  DewanTech™ logo and app icon (bundled by Vite)
+├── components/
+│   ├── Header.tsx           App header: icon, name, source link, theme switch
+│   ├── Footer.tsx           DewanTech™ footer: logo, links, copyright
+│   ├── Logo.tsx             DewanTech™ logo mark and wordmark
+│   ├── SearchBar.tsx        Accessible search form
+│   ├── InfoCards.tsx        IP, location, timezone and ISP results
+│   ├── MapView.tsx          Leaflet map with auto re-centering
+│   └── ThemeToggle.tsx      Light/dark switch
+├── context/
+│   ├── theme.ts             Theme context and useTheme hook
+│   └── ThemeContext.tsx     ThemeProvider with persistence
+├── hooks/
+│   └── useIpify.ts          Fetch state, error mapping, request cancellation
+├── lib/
+│   ├── ipify.ts             IPify API client
+│   ├── brand.ts             Brand name and external links
+│   └── types.ts             API response types
+└── utils/
+    └── validators.ts        IPv4, IPv6 and domain validation, input normalizing
+```
 
-Search any IP address or domain name
-Display IP address, city, region, country, timezone, and ISP
-Interactive map with dynamic marker updates
-Light and dark mode toggle with persistent user preference
-Real-time API data fetching with loading and error handling
-Fully responsive design for mobile, tablet, and desktop
-Basic accessibility support with ARIA labels and keyboard-friendly controls
+## Getting Started
 
-# Tech Stack
+**Requirements:** Node.js 20 or newer, and a free API key from [geo.ipify.org](https://geo.ipify.org/).
 
-React 
-TypeScript
-Vite
-React Hooks (useState, useEffect, useContext)
-Context API for global theme management
-Leaflet and react-leaflet for map rendering
-IPify Geolocation API
-CSS with custom responsive styling
-Git and GitHub for version control
-
-# Environment Variables
-
-This project uses an environment variable to store the IPify API key.
-Create a .env file in the project root and add the following:
-VITE_IPIFY_API_KEY=DEWAN_MAHMUD_ROCKY
-
-# Security note:
-
-The .env file is intentionally not committed to version control and is included in .gitignore to keep sensitive keys private.
-
-# Getting Started (Local Setup)
-
-1. Clone the repository
-git clone https://github.com/DewanTechUS/Project_React_Development_IP_Address_Tracker
-cd  (to the root)
-
-2. Install dependencies
+```bash
+git clone https://github.com/DewanTechUS/Project_React_Development_IP_Address_Tracker.git
+cd Project_React_Development_IP_Address_Tracker
 npm install
+```
 
-3. Run the development server
+Create a `.env` file in the project root:
+
+```
+VITE_IPIFY_API_KEY=your_ipify_api_key
+```
+
+Start the development server and open http://localhost:5173:
+
+```bash
 npm run dev
+```
 
-Open your browser at:
-http://localhost:5173
+### Scripts
 
-# Deployment
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the Vite development server |
+| `npm run build` | Type-check and create a production build in `dist/` |
+| `npm run preview` | Serve the production build locally |
+| `npm run lint` | Run ESLint |
 
-This project can be deployed as a static site using:
-Netlify for deployment
-Build command:
-npm run build
-Output directory:
-dist
+## Security Notes
 
-# Reflection
+- `.env` is listed in `.gitignore`, so the API key is never committed.
+- Vite embeds every `VITE_`-prefixed variable in the client bundle at build time. The IPify key is therefore visible to anyone who inspects the deployed site. That is unavoidable for a frontend-only app without a backend proxy. Monitor usage and credits in the IPify dashboard.
+- All user input is validated and URL-encoded before it is sent to the API.
+- External links open with `rel="noopener noreferrer"`.
 
-This project builds on work I initially started during an earlier SBA, which allowed me to approach this assignment with a clearer understanding of the problem space. Rather than reusing existing code, I rebuilt and refactored the application from the ground up using React and TypeScript. This process involved restructuring components, improving state management, and applying cleaner, more scalable architectural patterns aligned with the React Development project requirements. Having prior experience with a similar version helped streamline development while still resulting in a fresh, well-organized implementation.
+## Deployment
 
-Through this project, I reinforced core React concepts such as component composition, state management with hooks, handling side effects with useEffect, and managing global state using the Context API. Integrating an external API and rendering location data on an interactive map deepened my understanding of asynchronous data fetching, loading states, and error handling. One notable challenge was keeping the map view synchronized with updated API results, which I resolved by dynamically re-centering the Leaflet map whenever new coordinates were received. Implementing a light and dark theme using CSS variables and persistent state further strengthened my understanding of global UI state management.
+The live application is hosted on Render as a static site.
 
-Looking ahead, I would enhance this project by adding search history, improving accessibility, and providing more detailed, user-friendly error feedback. These improvements would help make the application more robust, inclusive, and production-ready.
+| Setting | Value |
+| --- | --- |
+| Build command | `npm install && npm run build` |
+| Publish directory | `dist` |
+| Environment variable | `VITE_IPIFY_API_KEY` (must be set before the build runs) |
 
-# Special Thanks
+## Engineering Highlights
 
-Special thanks to Tishana Trainor and Bryan Santos for their clear instruction, guidance, and support throughout my JavaScript and frontend development learning journey.
+- **Single data layer.** `lib/ipify.ts` handles validation, request building and HTTP status mapping. `hooks/useIpify.ts` owns loading and error state and cancels stale requests with `AbortController`.
+- **Map synchronization.** The Leaflet map is re-centered in an effect whenever new coordinates arrive, rather than during render.
+- **Theme without flash.** A small inline script applies the saved theme before React loads. The Context provider then keeps it in sync and persists changes.
+- **No extra dependencies.** IPv6 validation uses the browser's built-in URL parser instead of a library.
 
-Grateful as well to the Per Scholas community for providing a structured and supportive learning environment.
+## Author
 
+**Dewan Mahmud (Rocky)**, founder of Dewan Global LLC dba DewanTech™
+Full-Stack Software Engineer and IT Support Specialist, Norcross, Georgia
 
-# Project Planning
+- Company: https://www.dewantech.com
+- Portfolio: https://www.dewanmahmud.com
+- GitHub: https://github.com/DewanTechUS
 
-The initial planning and breakdown for this project is documented in the file below:
+---
 
-Project_Planning.md - outlines the project goals, scope, feature breakdown, development phases, and future enhancements.
-
+© 2026 Dewan Global LLC dba DewanTech™. All rights reserved.

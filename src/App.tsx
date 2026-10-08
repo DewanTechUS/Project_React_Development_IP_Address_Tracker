@@ -1,53 +1,52 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Header from "./components/Header";
+import Footer from "./components/Footer";
 import SearchBar from "./components/SearchBar";
 import InfoCards from "./components/InfoCards";
 import MapView from "./components/MapView";
-import { fetchIpData } from "./lib/ipify";
-import type { IpifyResponse } from "./lib/types";
+import { useIpify } from "./hooks/useIpify";
 
 export default function App() {
-  const [data, setData] = useState<IpifyResponse | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string>("");
+  const { data, loading, error, lookup } = useIpify();
 
-  async function runSearch(value: string) {
-    try {
-      setError("");
-      setLoading(true);
-      const res = await fetchIpData(value);
-      setData(res);
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : "Something went wrong";
-      setError(msg);
-    } finally {
-      setLoading(false);
-    }
-  }
-
+  // Start with the visitor's own public IP.
   useEffect(() => {
-    runSearch("");
-  }, []);
+    lookup("");
+  }, [lookup]);
 
   return (
     <div className="page">
-      <div className="top">
-        <Header />
-        <SearchBar onSearch={runSearch} isLoading={loading} />
+      <a className="skipLink" href="#main">Skip to content</a>
+      <Header />
 
-        {error ? (
-          <div className="error" role="alert">
-            {error}
+      <main id="main" className="main">
+        <section className="hero" aria-labelledby="hero-title">
+          <div className="container">
+            <h1 id="hero-title" className="heroTitle">Look up any IP address or domain</h1>
+            <p className="heroSubtitle">See its location, timezone and internet provider.</p>
+
+            <SearchBar onSearch={lookup} isLoading={loading} />
+
+            <div className="errorSlot" aria-live="assertive">
+              {error ? (
+                <p className="error" role="alert">
+                  {error}
+                </p>
+              ) : null}
+            </div>
           </div>
-        ) : null}
-        <InfoCards data={data} />
-      </div>
+        </section>
 
-      <div className="mapOuter">
-        <div className="mapInner">
-          <MapView data={data} />
+        <div className="container results">
+          <InfoCards data={data} isLoading={loading} />
+
+          <section className="mapCard" aria-label="Location map">
+            <MapView data={data} />
+          </section>
         </div>
-      </div>
+      </main>
+
+      <Footer />
     </div>
   );
 }

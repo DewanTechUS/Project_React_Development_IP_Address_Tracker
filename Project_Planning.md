@@ -1,81 +1,68 @@
-# PROJECT PLAN - REACT DEVELOPMENT IP ADDRESS TRACKER
+# Project Plan — IP Address Tracker (DewanTech™)
 
-## Project Goal
+## Goal
 
-Build a responsive IP Address Tracker using React and TypeScript that allows users to search for an IP address or domain and view location details on an interactive map.
+Build a responsive, accessible IP Address Tracker with React and TypeScript. Users search for an IP address or domain and see its location details on an interactive map.
 
-## Project Scope
+## Scope
 
-The application will fetch geolocation data from the IPify API and display results using LeafletJS. It will include a search feature, map visualization, information cards, light and dark theme support, and responsive design.
+- Fetch geolocation data from the IPify Geolocation API.
+- Display results in information cards and on a Leaflet map.
+- Support IPv4, IPv6 and domain input with client-side validation.
+- Provide persistent light and dark themes.
+- Present everything in a consistent DewanTech™ brand: navy, white and cyan palette, branded header and footer.
 
-## Technologies Used
+## Technologies
 
-React (functional components)
-TypeScript
-Vite
-React Hooks (useState, useEffect, useContext)
-Context API
-Leaflet and react-leaflet
-IPify Geolocation API
-CSS for styling and responsiveness
-Git and GitHub for version control
+React, TypeScript, Vite, React Hooks, Context API, Leaflet and react-leaflet, OpenStreetMap, IPify Geolocation API, CSS custom properties, ESLint, Git and GitHub, Render.
 
 ## Core Features
 
-- IP or domain search input
-- API data fetching with loading and error handling
-- Display of IP address, city, region, country, timezone, and ISP
-- Interactive map with marker that updates based on search results
-- Light and dark mode toggle with persistent user preference
-- Responsive layout for mobile, tablet, and desktop
-- Basic accessibility support
+- IP and domain search with input validation and URL normalizing
+- API fetching with loading states, mapped error messages and request cancellation
+- Display of IP address, city, region, country, timezone and ISP
+- Interactive map whose marker and center update with each result
+- Light and dark theme toggle that persists across visits without flashing
+- Responsive layout for mobile, tablet and desktop
+- Accessibility: skip link, labelled controls, focus styles, live regions, reduced-motion support
 
-## Project Breakdown
+## Architecture
 
-- Phase 1 - Project Setup
-Initialize a React project using Vite and TypeScript
-Set up Git repository and initial commits
-Install required dependencies (react-leaflet, leaflet)
-Configure environment variables for API key
+| Layer | Responsibility |
+| --- | --- |
+| `utils/validators.ts` | Validate IPv4, IPv6 and domains; normalize pasted URLs |
+| `lib/ipify.ts` | Build API requests and translate HTTP errors into user-facing messages |
+| `hooks/useIpify.ts` | Own data, loading and error state; abort stale requests |
+| `context/` | Theme state, persistence and the `useTheme` hook |
+| `components/` | Presentational UI: Header, Footer, Logo, SearchBar, InfoCards, MapView, ThemeToggle |
+| `lib/brand.ts` | Single source for brand name, copyright and external links |
 
-- Phase 2 - Component Structure
-Create reusable components (Header, SearchBar, InfoCards, MapView, ThemeToggle)
-Define shared TypeScript types for API responses
-Set up Context API for global theme management
+## Development Phases
 
-- Phase 3 - API Integration
-Implement API service to fetch IP geolocation data
-Handle domain vs IP input logic
-Add error handling and loading states
+1. **Setup.** Vite with React and TypeScript, Git repository, Leaflet dependencies, environment variable for the API key.
+2. **Components and types.** Reusable components, shared API response types, theme context.
+3. **API integration.** API client, IP and domain detection, error handling and loading states.
+4. **UI and state.** Connect search to the data hook, render result cards, sync the map with results, persist the theme.
+5. **Design system.** DewanTech™ tokens for navy, white and cyan, light and dark themes, responsive breakpoints, branded header and footer.
+6. **Testing and refinement.**
+   - Search valid and invalid IPv4, IPv6 and domain inputs.
+   - Confirm the map follows rapid consecutive searches.
+   - Confirm the theme persists across reloads.
+   - Check keyboard navigation and mobile layouts.
+7. **Deployment and documentation.** Static deployment on Render, README and planning documentation.
 
-- Phase 4 - UI and State Management
-Connect search input to API fetch logic
-Display fetched data in information cards
-Update map marker and center based on API results
-Persist theme preference using localStorage
+## Testing Checklist
 
-- Phase 5 - Styling and Responsiveness
-Apply custom CSS styling
-Implement light and dark themes using CSS variables
-Ensure layout works across different screen sizes
-
-- Phase 6 - Testing and Refinement
-Test valid and invalid IP or domain inputs
-Verify map updates correctly on search
-Confirm theme toggle persists across refresh
-Fix UI and layout issues
-
-- Phase 7 - Deployment and Documentation
-Deploy application using Netlify or Vercel
-Create final README with setup instructions and reflection
-Review commit history and ensure clean version control
-
-## Timeline
-Project completed over approximately one week, with faster development due to prior experience from an earlier SBA while rebuilding and refactoring the project from scratch.
+- [ ] Empty search returns the visitor's own IP
+- [ ] `8.8.8.8`, `2001:4860:4860::8888` and `example.com` return results
+- [ ] `https://example.com/path` is reduced to `example.com`
+- [ ] Invalid input such as `256.1.1.1` or `not a domain` shows a validation message without calling the API
+- [ ] A missing or invalid API key shows a clear message
+- [ ] The theme persists after reload with no flash
+- [ ] Layout works at 360px, 768px and 1280px widths
 
 ## Future Enhancements
-- Add search history
-- Improve accessibility support
-- Enhance error messaging and user feedback
-- Add animations or map enhancements
 
+- Search history
+- Map tile styling that matches the dark theme
+- Backend proxy to keep the API key off the client

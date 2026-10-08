@@ -1,12 +1,41 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ip-tracker</title>
+    <title>IP Address Tracker | DewanTech™</title>
+    <meta name="description" content="Look up any IPv4 or IPv6 address or domain to see its location, timezone and internet provider on an interactive map. Built by DewanTech™." />
+    <meta name="author" content="Dewan Mahmud" />
+    <meta name="copyright" content="© 2026 Dewan Global LLC dba DewanTech™" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="canonical" href="https://project-react-development-ip-address.onrender.com/" />
+    <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="DewanTech™" />
+    <meta property="og:title" content="IP Address Tracker | DewanTech™" />
+    <meta property="og:description" content="Look up any IP address or domain and see its location, timezone and ISP on an interactive map." />
+    <meta property="og:url" content="https://project-react-development-ip-address.onrender.com/" />
+    <meta property="og:image" content="https://project-react-development-ip-address.onrender.com/og-image.jpg" />
+    <meta property="og:image:width" content="288" />
+    <meta property="og:image:height" content="288" />
+    <meta property="og:image:alt" content="IP Address Tracker app icon: a magnifying glass over an IP address with a location pin" />
+    <meta name="twitter:card" content="summary" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- Apply the saved theme before first paint to avoid a light/dark flash. -->
+    <script>
+      try {
+        if (localStorage.getItem("theme") === "dark") document.documentElement.dataset.theme = "dark";
+      } catch (e) {}
+    </script>
   </head>
   <body>
+    <noscript>This application requires JavaScript to run.</noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
