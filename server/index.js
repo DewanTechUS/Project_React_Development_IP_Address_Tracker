@@ -1,8 +1,10 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import express from "express";
+import { connectDb } from "./db.js";
 import { LookupError, clientIP, lookup } from "./ipify.js";
 import { rateLimit } from "./rateLimit.js";
+import { recordSearch, visitorRouter } from "./visitors.js";
 
 try {
   process.loadEnvFile();
@@ -18,6 +20,15 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 if (!apiKey) {
   console.error("Missing IPIFY_API_KEY. Add it to .env or the host's environment settings.");
   process.exit(1);
+}
+
+if (process.env.MONGODB_URI) {
+  // Lookups work without the database; only saving visitor profiles needs it.
+  connectDb(process.env.MONGODB_URI)
+    .then(() => console.log("Connected to MongoDB"))
+    .catch((err) => console.error("MongoDB connection failed; visitor saving is disabled:", err.message));
+} else {
+  console.warn("MONGODB_URI not set; visitor saving is disabled.");
 }
 
 const app = express();
@@ -40,6 +51,7 @@ app.get("/api/lookup", rateLimit({ windowMs: 60_000, max: 30 }), async (req, res
   try {
     const data = await lookup(query, clientIP(req), apiKey);
     res.set("Cache-Control", "no-store").json(data);
+    recordSearch(req.get("x-visitor-id"), query, data);
   } catch (err) {
     if (err instanceof LookupError) {
       res.status(err.status).json({ error: err.message });
@@ -49,6 +61,8 @@ app.get("/api/lookup", rateLimit({ windowMs: 60_000, max: 30 }), async (req, res
     res.status(502).json({ error: "The geolocation service is unavailable right now. Please try again." });
   }
 });
+
+app.use("/api/visitors", visitorRouter(apiKey));
 
 app.use("/api", (_req, res) => {
   res.status(404).json({ error: "Not found." });

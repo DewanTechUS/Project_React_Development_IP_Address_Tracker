@@ -14,6 +14,7 @@ A DewanTech™ product by Dewan Global LLC. A full-stack web application for loo
 - **Geolocation results.** IP address, city, region, country, UTC offset and ISP.
 - **Interactive map.** A Leaflet and OpenStreetMap map that re-centers on each result, with a marker and popup.
 - **Secure backend.** A Node.js and Express API keeps the IPify key on the server, validates input and rate-limits requests.
+- **Optional visitor profiles.** A welcome modal invites visitors to add their name. It lists exactly what will be saved and requires an explicit "I agree". With consent, the profile and search history are stored in MongoDB. A **Forget me** link deletes everything.
 - **Loading and error handling.**
   - Placeholder skeletons and a spinner while data loads.
   - Input is validated in the browser and again on the server.
@@ -35,6 +36,7 @@ A DewanTech™ product by Dewan Global LLC. A full-stack web application for loo
 | State | `useState`, `useEffect`, a custom `useIpLookup` hook, Context API for theme |
 | Maps | Leaflet, react-leaflet, OpenStreetMap tiles |
 | Backend | Node.js, Express 5 |
+| Database | MongoDB Atlas (official `mongodb` driver) |
 | Data | IPify Geolocation API (called from the server only) |
 | Styling | Plain CSS with custom properties (no UI framework) |
 | Quality | ESLint for the frontend (TypeScript, React Hooks, React Refresh) and the server |
@@ -61,12 +63,30 @@ In production a single Express server serves both the built React app and the `/
 | More than 30 requests per minute from one IP | `429 { error }` |
 | Upstream failure | `502 { error }` |
 
+Requests that include an `X-Visitor-Id` header from an opted-in visitor are added to that visitor's search history.
+
+`POST /api/visitors` creates or updates a profile. Body: `{ name, consent: true, visitorId?, device }`. It returns `201 { visitorId, name }`. It returns `400` without consent or with an invalid name, and `503` when the database is unavailable.
+
+`DELETE /api/visitors/:visitorId` deletes the profile and all of its search history (`204`).
+
+### Data saved for opted-in visitors
+
+| Collection | Fields |
+| --- | --- |
+| `visitors` | name, IP address, approximate location and ISP, user agent, browser, OS, device type, accepted languages, and device details (timezone, language, screen and viewport size, pixel ratio, touch support, color scheme); `createdAt`, `consentAt`, `lastSeenAt` |
+| `ip_search_history` | query, result summary (IP, city, region, country, ISP), `createdAt` |
+
+Both collections live in the `dewantech_ip_tracker` database. TTL indexes delete inactive profiles and old searches after 12 months. Nothing is saved for visitors who skip the modal.
+
 ## Project Structure
 
 ```
 server/
-├── index.js                 Express app: API route, security headers, static files / Vite dev middleware
+├── index.js                 Express app: routes, security headers, static files / Vite dev middleware
+├── db.js                    MongoDB connection and indexes (unique IDs, 12-month TTL)
 ├── ipify.js                 IPify client: validation, visitor IP detection, error mapping
+├── visitors.js              Consent-based visitor profiles, search history, "Forget me"
+├── userAgent.js             Browser / OS / device type from the User-Agent header
 └── rateLimit.js             In-memory, per-IP rate limiter
 src/
 ├── App.tsx                  Page layout; wires the search to the data hook
@@ -80,7 +100,8 @@ src/
 │   ├── SearchBar.tsx        Accessible search form
 │   ├── InfoCards.tsx        IP, location, timezone and ISP results
 │   ├── MapView.tsx          Leaflet map with auto re-centering
-│   └── ThemeToggle.tsx      Light/dark switch
+│   ├── ThemeToggle.tsx      Light/dark switch
+│   └── WelcomeModal.tsx     Consent-based name prompt (native <dialog>)
 ├── context/
 │   ├── theme.ts             Theme context and useTheme hook
 │   └── ThemeContext.tsx     ThemeProvider with persistence
@@ -90,7 +111,8 @@ src/
 │   ├── api.ts               Client for the backend /api/lookup endpoint
 │   ├── brand.ts             Copyright and external links
 │   ├── format.ts            Location formatting
-│   └── types.ts             Lookup result types
+│   ├── types.ts             Lookup result types
+│   └── visitor.ts           Visitor ID storage, device details, save / forget
 └── utils/
     └── validators.ts        IPv4, IPv6 and domain validation, input normalizing
 ```
@@ -103,7 +125,7 @@ src/
 git clone https://github.com/DewanTechUS/Project_React_Development_IP_Address_Tracker.git
 cd Project_React_Development_IP_Address_Tracker
 npm install
-cp .env.example .env    # then put your IPify key in .env
+cp .env.example .env    # then add your IPify key (and MongoDB URI to enable profiles)
 npm run dev
 ```
 
@@ -121,10 +143,13 @@ Open http://localhost:3000, or the `PORT` set in `.env`.
 ## Security
 
 - **API key stays on the server.** It is read from `IPIFY_API_KEY`, never sent to the browser and not included in the frontend bundle.
+- **Database credentials stay on the server.** `MONGODB_URI` is read on the server only. Without it, the app still works and profile saving is disabled.
 - **Secrets are never committed.** `.env` and `.env.*` are listed in `.gitignore`; only the placeholder `.env.example` is tracked.
 - **Input validation.** Queries are validated and length-limited in the browser and on the server, then URL-encoded before reaching IPify.
 - **Rate limiting.** Each IP is limited to 30 lookups per minute to protect API credits. The limiter is in memory, so it is best-effort and per instance.
 - **Minimal responses.** The server returns only the fields the UI uses.
+- **Consent first.** Visitor data is saved only after an explicit opt-in that lists every field. Device details from the browser are limited to an allow-list and bounded in size. No fingerprinting techniques are used.
+- **Data retention.** Data expires after 12 months, and visitors can delete it at any time.
 - **Security headers.** `X-Content-Type-Options`, `X-Frame-Options` and `Referrer-Policy` are set, and `X-Powered-By` is disabled.
 - **Safe external links.** They open with `rel="noopener noreferrer"`.
 
@@ -137,9 +162,9 @@ Deploy as a **Web Service**; a static site cannot run the backend.
 | Runtime | Node |
 | Build command | `npm install && npm run build` |
 | Start command | `npm start` |
-| Environment variable | `IPIFY_API_KEY` |
+| Environment variables | `IPIFY_API_KEY`; optional `MONGODB_URI` |
 
-Render provides `PORT` automatically.
+Render provides `PORT` automatically. In MongoDB Atlas, open **Network Access** and allow connections from Render. The free tier has no fixed outbound IPs, so this usually means `0.0.0.0/0`; your database password still protects access.
 
 ## Engineering Highlights
 

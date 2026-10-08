@@ -2,7 +2,11 @@ import ThemeToggle from "./ThemeToggle";
 import { LINKS } from "../lib/brand";
 import appIconUrl from "../assets/ip-tracker-icon.jpg";
 
-export default function Header() {
+type Props = {
+  visitorName?: string;
+};
+
+export default function Header({ visitorName }: Props) {
   return (
     <header className="siteHeader">
       <div className="container headerBar">
@@ -12,6 +16,7 @@ export default function Header() {
         </a>
 
         <nav className="headerNav" aria-label="Primary">
+          {visitorName ? <span className="greeting">Hi, {visitorName}</span> : null}
           <a className="navLink" href={LINKS.repo} target="_blank" rel="noopener noreferrer">
             Source
           </a>

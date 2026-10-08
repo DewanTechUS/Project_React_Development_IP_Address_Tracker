@@ -1,13 +1,37 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import SearchBar from "./components/SearchBar";
 import InfoCards from "./components/InfoCards";
 import MapView from "./components/MapView";
+import WelcomeModal from "./components/WelcomeModal";
 import { useIpLookup } from "./hooks/useIpLookup";
+import { dismissPrompt, forgetVisitor, loadVisitor, saveVisitor, wasPromptDismissed } from "./lib/visitor";
 
 export default function App() {
   const { data, loading, error, lookup } = useIpLookup();
+  const [visitor, setVisitor] = useState(loadVisitor);
+  const [promptOpen, setPromptOpen] = useState(() => !loadVisitor() && !wasPromptDismissed());
+
+  async function handleSave(name: string) {
+    setVisitor(await saveVisitor(name));
+    setPromptOpen(false);
+  }
+
+  function handleSkip() {
+    dismissPrompt();
+    setPromptOpen(false);
+  }
+
+  async function handleForget() {
+    if (!visitor || !window.confirm("Delete your saved name, device information and search history?")) return;
+    try {
+      await forgetVisitor(visitor.visitorId);
+      setVisitor(null);
+    } catch (err) {
+      window.alert(err instanceof Error ? err.message : "Could not delete your information.");
+    }
+  }
 
   // Start with the visitor's own public IP.
   useEffect(() => {
@@ -17,7 +41,7 @@ export default function App() {
   return (
     <div className="page">
       <a className="skipLink" href="#main">Skip to content</a>
-      <Header />
+      <Header visitorName={visitor?.name} />
 
       <main id="main" className="main">
         <section className="hero" aria-labelledby="hero-title">
@@ -46,7 +70,13 @@ export default function App() {
         </div>
       </main>
 
-      <Footer />
+      <Footer
+        hasProfile={visitor !== null}
+        onForget={handleForget}
+        onAddName={() => setPromptOpen(true)}
+      />
+
+      <WelcomeModal open={promptOpen} onSave={handleSave} onSkip={handleSkip} />
     </div>
   );
 }

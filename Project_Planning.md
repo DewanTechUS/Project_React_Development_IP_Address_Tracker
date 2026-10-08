@@ -26,6 +26,7 @@ React, TypeScript, Vite, React Hooks, Context API, Leaflet and react-leaflet, Op
 - Light and dark theme toggle that persists across visits without flashing
 - Responsive layout for mobile, tablet and desktop
 - Accessibility: skip link, labelled controls, focus styles, live regions, reduced-motion support
+- Optional, consent-based visitor profiles and search history in MongoDB, with "Forget me" deletion and 12-month retention
 
 ## Architecture
 
@@ -34,6 +35,9 @@ React, TypeScript, Vite, React Hooks, Context API, Leaflet and react-leaflet, Op
 | `server/index.js` | Express app: `/api/lookup`, security headers, static files in production, Vite middleware in development |
 | `server/ipify.js` | Call IPify with the server-held key; validate input; detect the visitor's IP; map errors |
 | `server/rateLimit.js` | Per-IP rate limiting to protect API credits |
+| `server/db.js` | MongoDB connection, unique and TTL indexes |
+| `server/visitors.js` | Save and delete consented visitor profiles; record their searches |
+| `lib/visitor.ts` / `WelcomeModal.tsx` | Consent modal, device details, local visitor ID |
 | `utils/validators.ts` | Validate IPv4, IPv6 and domains in the browser; normalize pasted URLs |
 | `lib/api.ts` | Call the backend and surface its error messages |
 | `hooks/useIpLookup.ts` | Own data, loading and error state; abort stale requests |
@@ -64,6 +68,8 @@ React, TypeScript, Vite, React Hooks, Context API, Leaflet and react-leaflet, Op
 - [ ] Invalid input such as `256.1.1.1` or `not a domain` shows a validation message without calling the API
 - [ ] The server refuses to start without `IPIFY_API_KEY`, and the key is absent from the frontend bundle
 - [ ] More than 30 lookups per minute returns a rate-limit message
+- [ ] Saving requires a name and the consent checkbox; Skip saves nothing
+- [ ] Opted-in searches appear in `ip_search_history`; Forget me deletes the profile and history
 - [ ] The theme persists after reload with no flash
 - [ ] Layout works at 360px, 768px and 1280px widths
 
