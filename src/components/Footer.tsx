@@ -7,13 +7,7 @@ const FOOTER_LINKS = [
   { label: "GitHub", href: LINKS.github },
 ];
 
-type Props = {
-  hasProfile: boolean;
-  onForget: () => void;
-  onAddName: () => void;
-};
-
-export default function Footer({ hasProfile, onForget, onAddName }: Props) {
+export default function Footer() {
   return (
     <footer className="siteFooter">
       <div className="container footerInner">
@@ -25,15 +19,6 @@ export default function Footer({ hasProfile, onForget, onAddName }: Props) {
               {link.label}
             </a>
           ))}
-          {hasProfile ? (
-            <button type="button" className="linkButton" onClick={onForget}>
-              Forget me
-            </button>
-          ) : (
-            <button type="button" className="linkButton" onClick={onAddName}>
-              Add your name
-            </button>
-          )}
         </nav>
 
         <p className="copyright">{COPYRIGHT}</p>

@@ -5,7 +5,7 @@ import type { IpLookupResult } from "../lib/types";
 function toMessage(e: unknown) {
   // fetch() rejects with a TypeError when the request never reaches the server.
   if (e instanceof TypeError) {
-    return "Unable to reach the server. Check your connection and try again.";
+    return "Unable to reach the geolocation service. Check your connection or disable content blockers, then try again.";
   }
   return e instanceof Error ? e.message : "Something went wrong while fetching data.";
 }

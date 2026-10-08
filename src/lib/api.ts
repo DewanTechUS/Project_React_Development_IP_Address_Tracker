@@ -1,27 +1,44 @@
 import type { IpLookupResult } from "./types";
 import { isDomain, isIP, normalizeQuery } from "../utils/validators";
-import { loadVisitor } from "./visitor";
 
-const FALLBACK_ERROR = "The geolocation service is unavailable right now. Please try again.";
+const BASE_URL = "https://geo.ipify.org/api/v2/country,city";
+
+function statusMessage(status: number) {
+  if (status === 400 || status === 422) {
+    return "No results for that IP address or domain. Check the spelling and try again.";
+  }
+  if (status === 401 || status === 403) {
+    return "The geolocation service rejected the request. The API key may be invalid or out of credits.";
+  }
+  if (status === 429) {
+    return "Too many requests. Please wait a moment and try again.";
+  }
+  return `The geolocation service is unavailable right now (error ${status}). Please try again.`;
+}
 
 export async function fetchIpData(query: string, signal?: AbortSignal): Promise<IpLookupResult> {
+  const apiKey = import.meta.env.VITE_IPIFY_API_KEY as string | undefined;
+  if (!apiKey) {
+    throw new Error("The geolocation service is not configured. Add VITE_IPIFY_API_KEY to your .env file.");
+  }
+
   const value = normalizeQuery(query);
+  const url = new URL(BASE_URL);
+  url.searchParams.set("apiKey", apiKey);
 
-  // Validate here for instant feedback; the server validates again.
-  if (value && !isIP(value) && !isDomain(value)) {
-    throw new Error("Enter a valid IP address (e.g. 8.8.8.8) or domain (e.g. example.com).");
+  // An empty query looks up the visitor's own public IP.
+  if (value) {
+    if (isIP(value)) url.searchParams.set("ipAddress", value);
+    else if (isDomain(value)) url.searchParams.set("domain", value.toLowerCase());
+    else throw new Error("Enter a valid IP address (e.g. 8.8.8.8) or domain (e.g. example.com).");
   }
 
-  // Only visitors who opted in send their ID, so their searches can be saved.
-  const visitorId = loadVisitor()?.visitorId;
-  const res = await fetch(`/api/lookup?q=${encodeURIComponent(value)}`, {
-    signal,
-    headers: visitorId ? { "X-Visitor-Id": visitorId } : undefined,
-  });
-  const body = await res.json().catch(() => null);
+  const res = await fetch(url, { signal });
+  if (!res.ok) throw new Error(statusMessage(res.status));
 
-  if (!res.ok) {
-    throw new Error(body?.error ?? FALLBACK_ERROR);
+  const data = (await res.json()) as IpLookupResult;
+  if (!Number.isFinite(data?.location?.lat) || !Number.isFinite(data?.location?.lng)) {
+    throw new Error("No location was found for that IP address or domain.");
   }
-  return body as IpLookupResult;
+  return data;
 }
