@@ -261,28 +261,28 @@ a { color: inherit; }
 
 /* ---------- Hero ---------- */
 .hero {
-  padding: 56px 0 112px;
+  padding: 32px 0 68px;
   text-align: center;
   color: var(--chrome-text);
   background: var(--hero-bg);
 }
 
 .heroTitle {
-  font-size: clamp(26px, 4.5vw, 40px);
+  font-size: clamp(22px, 3vw, 30px);
   font-weight: 800;
   letter-spacing: -0.02em;
   line-height: 1.15;
 }
 
 .heroSubtitle {
-  margin-top: 12px;
+  margin-top: 6px;
   color: var(--chrome-muted);
-  font-size: 16px;
+  font-size: 15px;
 }
 
 /* ---------- Search ---------- */
 .search {
-  margin: 28px auto 0;
+  margin: 18px auto 0;
   max-width: 640px;
   display: flex;
   padding: 6px;
@@ -360,8 +360,8 @@ a { color: inherit; }
 /* ---------- Results ---------- */
 .results {
   position: relative;
-  margin-top: -72px;
-  padding-bottom: 64px;
+  margin-top: -44px;
+  padding-bottom: 32px;
 }
 
 .cards {
@@ -375,7 +375,7 @@ a { color: inherit; }
 }
 
 .card {
-  padding: 26px 28px;
+  padding: 16px 22px;
   border-left: 1px solid var(--border);
 }
 
@@ -390,9 +390,9 @@ a { color: inherit; }
 }
 
 .cardValue {
-  margin-top: 10px;
+  margin-top: 4px;
   min-height: 1.4em;
-  font-size: 20px;
+  font-size: 17px;
   font-weight: 700;
   letter-spacing: -0.01em;
   overflow-wrap: anywhere;
@@ -418,7 +418,7 @@ a { color: inherit; }
 
 /* ---------- Map ---------- */
 .mapCard {
-  margin-top: 24px;
+  margin-top: 16px;
   border-radius: var(--radius);
   overflow: hidden;
   border: 1px solid var(--border);
@@ -428,9 +428,9 @@ a { color: inherit; }
 
 .map {
   width: 100%;
-  height: 60vh;
-  min-height: 400px;
-  max-height: 640px;
+  height: 70vh;
+  min-height: 420px;
+  max-height: 820px;
   background: var(--panel2);
 }
 
@@ -478,7 +478,7 @@ a { color: inherit; }
   .cards { grid-template-columns: repeat(2, 1fr); }
   .card:nth-child(3) { border-left: 0; }
   .card:nth-child(n + 3) { border-top: 1px solid var(--border); }
-  .map { height: 55vh; min-height: 340px; }
+  .map { height: 62vh; min-height: 380px; }
 }
 
 @media (max-width: 560px) {
@@ -488,12 +488,17 @@ a { color: inherit; }
   .appBrand { gap: 10px; }
   .appIcon { width: 32px; height: 32px; border-radius: 8px; }
   .appName { font-size: 16px; }
-  .hero { padding: 36px 0 96px; }
+  .hero { padding: 20px 0 56px; }
+  .heroTitle { font-size: 21px; }
+  .heroSubtitle { font-size: 14px; }
+  .search { margin-top: 14px; }
+  .results { margin-top: -40px; padding-bottom: 20px; }
   .searchInput { padding: 12px 10px; }
   .searchBtn { min-width: 0; padding: 12px 18px; }
-  .card { padding: 16px; }
-  .cardValue { font-size: 16px; margin-top: 6px; }
-  .map { height: 50vh; min-height: 300px; }
+  .card { padding: 12px 14px; }
+  .cardValue { font-size: 15px; }
+  .mapCard { margin-top: 12px; }
+  .map { height: 62vh; min-height: 340px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

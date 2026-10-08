@@ -1,16 +1,23 @@
 import { useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
-import type { IpifyResponse } from "../lib/types";
+import type { IpLookupResult } from "../lib/types";
+import { formatLocation } from "../lib/format";
 import L from "leaflet";
 
 import marker2x from "leaflet/dist/images/marker-icon-2x.png";
 import marker from "leaflet/dist/images/marker-icon.png";
 import shadow from "leaflet/dist/images/marker-shadow.png";
 
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: marker2x,
+// An explicit icon avoids L.Icon.Default prefixing its auto-detected
+// image path onto bundler-resolved URLs.
+const markerIcon = L.icon({
   iconUrl: marker,
+  iconRetinaUrl: marker2x,
   shadowUrl: shadow,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
 });
 
 // Fallback center shown until the first lookup resolves.
@@ -25,7 +32,7 @@ function Recenter({ lat, lng }: { lat: number; lng: number }) {
 }
 
 type Props = {
-  data: IpifyResponse | null;
+  data: IpLookupResult | null;
 };
 
 export default function MapView({ data }: Props) {
@@ -39,12 +46,10 @@ export default function MapView({ data }: Props) {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       />
       {data ? (
-        <Marker position={[lat, lng]}>
+        <Marker position={[lat, lng]} icon={markerIcon}>
           <Popup>
             <strong>{data.ip}</strong>
-            <div>
-              {[data.location.city, data.location.region, data.location.country].filter(Boolean).join(", ")}
-            </div>
+            <div>{formatLocation(data.location)}</div>
           </Popup>
         </Marker>
       ) : null}

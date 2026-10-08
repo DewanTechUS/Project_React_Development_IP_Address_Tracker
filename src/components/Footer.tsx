@@ -1,5 +1,5 @@
 import Logo from "./Logo";
-import { BRAND, LINKS } from "../lib/brand";
+import { COPYRIGHT, LINKS } from "../lib/brand";
 
 const FOOTER_LINKS = [
   { label: "DewanTech.com", href: LINKS.website },
@@ -21,7 +21,7 @@ export default function Footer() {
           ))}
         </nav>
 
-        <p className="copyright">{BRAND.copyright}</p>
+        <p className="copyright">{COPYRIGHT}</p>
       </div>
     </footer>
   );

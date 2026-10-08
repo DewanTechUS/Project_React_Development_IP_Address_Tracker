@@ -1,15 +1,14 @@
-export type IpifyLocation = {
-  country: string;
-  region: string;
+export type IpLocation = {
   city: string;
+  region: string;
+  country: string;
+  timezone: string;
   lat: number;
   lng: number;
-  timezone: string;
-  postalCode?: string;
 };
 
-export type IpifyResponse = {
+export type IpLookupResult = {
   ip: string;
-  location: IpifyLocation;
   isp?: string;
+  location: IpLocation;
 };

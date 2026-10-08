@@ -4,10 +4,10 @@ import Footer from "./components/Footer";
 import SearchBar from "./components/SearchBar";
 import InfoCards from "./components/InfoCards";
 import MapView from "./components/MapView";
-import { useIpify } from "./hooks/useIpify";
+import { useIpLookup } from "./hooks/useIpLookup";
 
 export default function App() {
-  const { data, loading, error, lookup } = useIpify();
+  const { data, loading, error, lookup } = useIpLookup();
 
   // Start with the visitor's own public IP.
   useEffect(() => {

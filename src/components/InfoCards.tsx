@@ -1,24 +1,17 @@
-import type { IpifyResponse } from "../lib/types";
+import type { IpLookupResult } from "../lib/types";
+import { formatLocation } from "../lib/format";
 
 type Props = {
-  data: IpifyResponse | null;
+  data: IpLookupResult | null;
   isLoading: boolean;
 };
 
 export default function InfoCards({ data, isLoading }: Props) {
-  const ip = data?.ip || "—";
-  const location = data
-    ? [data.location.city, data.location.region, data.location.country].filter(Boolean).join(", ") || "—"
-    : "—";
-
-  const timezone = data?.location.timezone ? `UTC ${data.location.timezone}` : "—";
-  const isp = data?.isp || "—";
-
   const items = [
-    { label: "IP Address", value: ip },
-    { label: "Location", value: location },
-    { label: "Timezone", value: timezone },
-    { label: "ISP", value: isp },
+    { label: "IP Address", value: data?.ip },
+    { label: "Location", value: data && formatLocation(data.location) },
+    { label: "Timezone", value: data?.location.timezone && `UTC ${data.location.timezone}` },
+    { label: "ISP", value: data?.isp },
   ];
 
   const showSkeleton = isLoading && !data;
@@ -33,7 +26,7 @@ export default function InfoCards({ data, isLoading }: Props) {
         <div className="card" key={item.label}>
           <h2 className="cardLabel">{item.label}</h2>
           <p className="cardValue">
-            {showSkeleton ? <span className="skeleton" aria-hidden="true" /> : item.value}
+            {showSkeleton ? <span className="skeleton" aria-hidden="true" /> : item.value || "—"}
           </p>
         </div>
       ))}

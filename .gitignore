@@ -1,5 +1,9 @@
-# Logs
+# Environment (secrets)
 .env
+.env.*
+!.env.example
+
+# Logs
 logs
 *.log
 npm-debug.log*
@@ -23,3 +27,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Vite temp config bundles
+vite.config.*.timestamp-*

@@ -1,17 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { fetchIpData } from "../lib/ipify";
-import type { IpifyResponse } from "../lib/types";
+import { fetchIpData } from "../lib/api";
+import type { IpLookupResult } from "../lib/types";
 
 function toMessage(e: unknown) {
   // fetch() rejects with a TypeError when the request never reaches the server.
   if (e instanceof TypeError) {
-    return "Unable to reach the geolocation service. Check your connection or disable content blockers, then try again.";
+    return "Unable to reach the server. Check your connection and try again.";
   }
   return e instanceof Error ? e.message : "Something went wrong while fetching data.";
 }
 
-export function useIpify() {
-  const [data, setData] = useState<IpifyResponse | null>(null);
+export function useIpLookup() {
+  const [data, setData] = useState<IpLookupResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 

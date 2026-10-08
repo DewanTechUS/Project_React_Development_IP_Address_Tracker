@@ -6,7 +6,7 @@ Build a responsive, accessible IP Address Tracker with React and TypeScript. Use
 
 ## Scope
 
-- Fetch geolocation data from the IPify Geolocation API.
+- Fetch geolocation data from the IPify Geolocation API through a Node.js and Express backend, so the API key never reaches the browser.
 - Display results in information cards and on a Leaflet map.
 - Support IPv4, IPv6 and domain input with client-side validation.
 - Provide persistent light and dark themes.
@@ -14,12 +14,13 @@ Build a responsive, accessible IP Address Tracker with React and TypeScript. Use
 
 ## Technologies
 
-React, TypeScript, Vite, React Hooks, Context API, Leaflet and react-leaflet, OpenStreetMap, IPify Geolocation API, CSS custom properties, ESLint, Git and GitHub, Render.
+React, TypeScript, Vite, React Hooks, Context API, Leaflet and react-leaflet, OpenStreetMap, Node.js, Express, IPify Geolocation API, CSS custom properties, ESLint, Git and GitHub, Render.
 
 ## Core Features
 
 - IP and domain search with input validation and URL normalizing
-- API fetching with loading states, mapped error messages and request cancellation
+- Backend API with server-side validation, rate limiting and mapped error messages
+- Client fetching with loading states and request cancellation
 - Display of IP address, city, region, country, timezone and ISP
 - Interactive map whose marker and center update with each result
 - Light and dark theme toggle that persists across visits without flashing
@@ -30,12 +31,15 @@ React, TypeScript, Vite, React Hooks, Context API, Leaflet and react-leaflet, Op
 
 | Layer | Responsibility |
 | --- | --- |
-| `utils/validators.ts` | Validate IPv4, IPv6 and domains; normalize pasted URLs |
-| `lib/ipify.ts` | Build API requests and translate HTTP errors into user-facing messages |
-| `hooks/useIpify.ts` | Own data, loading and error state; abort stale requests |
+| `server/index.js` | Express app: `/api/lookup`, security headers, static files in production, Vite middleware in development |
+| `server/ipify.js` | Call IPify with the server-held key; validate input; detect the visitor's IP; map errors |
+| `server/rateLimit.js` | Per-IP rate limiting to protect API credits |
+| `utils/validators.ts` | Validate IPv4, IPv6 and domains in the browser; normalize pasted URLs |
+| `lib/api.ts` | Call the backend and surface its error messages |
+| `hooks/useIpLookup.ts` | Own data, loading and error state; abort stale requests |
 | `context/` | Theme state, persistence and the `useTheme` hook |
 | `components/` | Presentational UI: Header, Footer, Logo, SearchBar, InfoCards, MapView, ThemeToggle |
-| `lib/brand.ts` | Single source for brand name, copyright and external links |
+| `lib/brand.ts` | Single source for copyright and external links |
 
 ## Development Phases
 
@@ -49,7 +53,8 @@ React, TypeScript, Vite, React Hooks, Context API, Leaflet and react-leaflet, Op
    - Confirm the map follows rapid consecutive searches.
    - Confirm the theme persists across reloads.
    - Check keyboard navigation and mobile layouts.
-7. **Deployment and documentation.** Static deployment on Render, README and planning documentation.
+7. **Backend.** Express API that proxies IPify, keeps the key server-side, validates input and rate-limits requests.
+8. **Deployment and documentation.** Render Web Service, README and planning documentation.
 
 ## Testing Checklist
 
@@ -57,7 +62,8 @@ React, TypeScript, Vite, React Hooks, Context API, Leaflet and react-leaflet, Op
 - [ ] `8.8.8.8`, `2001:4860:4860::8888` and `example.com` return results
 - [ ] `https://example.com/path` is reduced to `example.com`
 - [ ] Invalid input such as `256.1.1.1` or `not a domain` shows a validation message without calling the API
-- [ ] A missing or invalid API key shows a clear message
+- [ ] The server refuses to start without `IPIFY_API_KEY`, and the key is absent from the frontend bundle
+- [ ] More than 30 lookups per minute returns a rate-limit message
 - [ ] The theme persists after reload with no flash
 - [ ] Layout works at 360px, 768px and 1280px widths
 
@@ -65,4 +71,4 @@ React, TypeScript, Vite, React Hooks, Context API, Leaflet and react-leaflet, Op
 
 - Search history
 - Map tile styling that matches the dark theme
-- Backend proxy to keep the API key off the client
+- Shared rate-limit store (e.g. Redis) if the app scales beyond one instance
