@@ -13,6 +13,11 @@ A DewanTech™ product by Dewan Global LLC. A responsive web application for loo
 - **Automatic lookup on load.** The visitor's own public IP is shown when the page opens. Submitting an empty search looks it up again.
 - **Geolocation results.** IP address, city, region, country, UTC offset and ISP.
 - **Interactive map.** A Leaflet and OpenStreetMap map that re-centers on each result, with a marker and popup.
+- **IP details panel.**
+  - Network: IP version, ASN, network name, IP range (CIDR), network type and the network owner's website.
+  - Location: full country name, live local time at the IP's location, coordinates and an "Open in Google Maps" link. The postal code is shown when available.
+- **Copy and share.** Copy the IP address or coordinates with one click. Every result has a shareable link (`?q=8.8.8.8`) that opens straight to it.
+- **Recent searches.** The last five successful searches appear as quick buttons next to **My IP**. They are stored only in the visitor's browser and can be cleared.
 - **Loading and error handling.**
   - Placeholder skeletons and a spinner while data loads.
   - Input is validated before any request is sent.
@@ -53,6 +58,9 @@ src/
 │   ├── Logo.tsx             DewanTech™ logo mark and wordmark
 │   ├── SearchBar.tsx        Accessible search form
 │   ├── InfoCards.tsx        IP, location, timezone and ISP results
+│   ├── IpDetails.tsx        Network and location details, share link
+│   ├── RecentSearches.tsx   My IP and recent-search quick buttons
+│   ├── CopyButton.tsx       Clipboard copy with "Copied" feedback
 │   ├── MapView.tsx          Leaflet map with auto re-centering
 │   └── ThemeToggle.tsx      Light/dark switch
 ├── context/
@@ -63,8 +71,9 @@ src/
 ├── lib/
 │   ├── api.ts               IPify API client and error mapping
 │   ├── brand.ts             Copyright and external links
-│   ├── format.ts            Location formatting
-│   └── types.ts             Lookup result types
+│   ├── format.ts            Location, country, local time and URL helpers
+│   ├── recent.ts            Recent searches in localStorage
+│   └── types.ts             Lookup result and network (ASN) types
 └── utils/
     └── validators.ts        IPv4, IPv6 and domain validation, input normalizing
 ```
@@ -114,6 +123,8 @@ The live application is hosted on Render as a static site.
 - **Single data layer.** `lib/api.ts` handles validation, request building and HTTP status mapping. `hooks/useIpLookup.ts` owns loading and error state and cancels stale requests with `AbortController`.
 - **Map synchronization.** The Leaflet map is re-centered in an effect whenever new coordinates arrive, and it uses an explicit marker icon so assets resolve correctly in every build mode.
 - **Theme without flash.** A small inline script applies the saved theme before React loads. The Context provider then keeps it in sync and persists changes.
+- **More data, same request.** The details panel uses fields IPify already returns (ASN, route, network type), so it costs no extra API calls. Country names come from `Intl.DisplayNames`, and local time is computed from the UTC offset.
+- **Safe rendering of API data.** Website links from the API are rendered only if they are `http(s)` URLs.
 - **No extra dependencies.** IPv6 validation uses the browser's built-in URL parser instead of a library.
 
 ## Author

@@ -437,6 +437,147 @@ a { color: inherit; }
 .leaflet-container { font-family: inherit; }
 .leaflet-popup-content { color: var(--navy-900); }
 
+/* ---------- Recent searches ---------- */
+.recent {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  max-width: 640px;
+  margin: 12px auto 0;
+}
+
+.chip {
+  max-width: 220px;
+  padding: 5px 12px;
+  border: 1px solid var(--search-border);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--chrome-text);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.chip:hover { border-color: var(--cyan-500); }
+
+.chipClear {
+  padding: 5px 6px;
+  border: 0;
+  background: none;
+  color: var(--chrome-muted);
+  font: inherit;
+  font-size: 13px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ---------- Copy button ---------- */
+.copyBtn {
+  flex-shrink: 0;
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.copyBtn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* ---------- IP details ---------- */
+.details {
+  margin-top: 16px;
+  padding: 20px 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.detailsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.detailsHeading {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.detailGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 40px;
+  margin-top: 12px;
+}
+
+.detailTitle {
+  margin: 0 0 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.detailList { margin: 0; }
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+
+.detailRow:last-child { border-bottom: 0; }
+
+.detailRow dt { color: var(--muted); }
+
+.detailRow dd {
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.detailRow a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.detailRow a:hover { text-decoration: underline; }
+
+.inlineActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
 /* ---------- Footer ---------- */
 .siteFooter {
   background: var(--navy-900);
@@ -498,6 +639,9 @@ a { color: inherit; }
   .card { padding: 12px 14px; }
   .cardValue { font-size: 15px; }
   .mapCard { margin-top: 12px; }
+  .details { margin-top: 12px; padding: 16px; }
+  .detailGrid { grid-template-columns: 1fr; gap: 12px; }
+  .recent { margin-top: 10px; gap: 6px; }
   .map { height: 62vh; min-height: 340px; }
 }
 

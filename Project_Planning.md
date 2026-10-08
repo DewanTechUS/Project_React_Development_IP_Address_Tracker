@@ -22,6 +22,8 @@ React, TypeScript, Vite, React Hooks, Context API, Leaflet and react-leaflet, Op
 - API fetching with loading states, mapped error messages and request cancellation
 - Display of IP address, city, region, country, timezone and ISP
 - Interactive map whose marker and center update with each result
+- IP details panel: ASN, network name, IP range, network type, country, local time, coordinates
+- Copy buttons, shareable result links (`?q=`) and recent searches stored in the browser
 - Light and dark theme toggle that persists across visits without flashing
 - Responsive layout for mobile, tablet and desktop
 - Accessibility: skip link, labelled controls, focus styles, live regions, reduced-motion support
@@ -64,5 +66,4 @@ React, TypeScript, Vite, React Hooks, Context API, Leaflet and react-leaflet, Op
 
 ## Future Enhancements
 
-- Search history
 - Map tile styling that matches the dark theme

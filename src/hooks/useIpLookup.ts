@@ -17,7 +17,8 @@ export function useIpLookup() {
 
   const controllerRef = useRef<AbortController | null>(null);
 
-  const lookup = useCallback(async (query: string) => {
+  // Resolves with the result, or null if the lookup failed or was superseded.
+  const lookup = useCallback(async (query: string): Promise<IpLookupResult | null> => {
     // Cancel any in-flight request so an older response can't overwrite a newer one.
     controllerRef.current?.abort();
     const controller = new AbortController();
@@ -29,9 +30,10 @@ export function useIpLookup() {
     try {
       const res = await fetchIpData(query, controller.signal);
       setData(res);
+      return res;
     } catch (e) {
-      if (controller.signal.aborted) return;
-      setError(toMessage(e));
+      if (!controller.signal.aborted) setError(toMessage(e));
+      return null;
     } finally {
       if (controllerRef.current === controller) setLoading(false);
     }

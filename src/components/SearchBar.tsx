@@ -1,13 +1,11 @@
-import { useState } from "react";
-
 type Props = {
+  value: string;
+  onChange: (value: string) => void;
   onSearch: (value: string) => void;
   isLoading: boolean;
 };
 
-export default function SearchBar({ onSearch, isLoading }: Props) {
-  const [value, setValue] = useState("");
-
+export default function SearchBar({ value, onChange, onSearch, isLoading }: Props) {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     onSearch(value);
@@ -22,7 +20,7 @@ export default function SearchBar({ onSearch, isLoading }: Props) {
         id="ip-search"
         className="searchInput"
         value={value}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={(e) => onChange(e.target.value)}
         placeholder="e.g. 8.8.8.8 or google.com"
         aria-describedby="search-hint"
         autoComplete="off"
