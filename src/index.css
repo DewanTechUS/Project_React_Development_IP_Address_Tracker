@@ -29,7 +29,7 @@ html[data-theme="dark"] {
   --panel: #0d1f42;
   --panel2: #132a55;
   --border: #1d3666;
-  --accent: #22d3ee;
+  --accent: var(--brand-blue);
   --shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
 
   --chrome-bg: var(--navy-900);
@@ -45,6 +45,17 @@ html[data-theme="dark"] {
   --error-bg: rgba(239, 68, 68, 0.14);
   --error-border: rgba(248, 113, 113, 0.45);
   --error-text: #fecaca;
+
+  /* DewanTech™ lockup on dark: white + blue, gray tagline, near-black footer */
+  --brand-ink: #ffffff;
+  --brand-tech: #3355ff; /* brightened from #0000ff so it stays readable on near-black */
+  --brand-tagline: #a1a1aa;
+  --brand-blue: #3b8bff; /* links and accents */
+  --footer-bg: #09090b;
+  --footer-border: rgba(255, 255, 255, 0.08);
+  --footer-text: #c4c4cc;
+  --footer-hover: #ffffff;
+  --footer-fine: #8b8b94;
   color-scheme: dark;
 }
 
@@ -55,7 +66,7 @@ html[data-theme="light"] {
   --panel: #ffffff;
   --panel2: #eaf0f8;
   --border: #dbe3ef;
-  --accent: #0e7490;
+  --accent: var(--brand-blue);
   --shadow: 0 12px 32px rgba(10, 31, 68, 0.08);
 
   --chrome-bg: #ffffff;
@@ -71,6 +82,17 @@ html[data-theme="light"] {
   --error-bg: #fef2f2;
   --error-border: #fecaca;
   --error-text: #b91c1c;
+
+  /* DewanTech™ lockup on light: black + blue, gray tagline, white footer */
+  --brand-ink: #0a0a0a;
+  --brand-tech: #0000ff;
+  --brand-tagline: #6b7280;
+  --brand-blue: #0068e1; /* links and accents */
+  --footer-bg: #ffffff;
+  --footer-border: var(--border);
+  --footer-text: #475569;
+  --footer-hover: var(--brand-blue);
+  --footer-fine: #64748b;
   color-scheme: light;
 }
 
@@ -137,32 +159,52 @@ a { color: inherit; }
 .main { flex: 1; }
 
 /* ---------- Brand ---------- */
-/* Logo artwork has white strokes, so it is only placed on navy surfaces. */
+/* Lockup: black logo tile (same in both themes), wordmark and tagline. */
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 14px;
+  text-align: left;
 }
 
 .brandMark {
   display: block;
-  height: 28px;
-  width: auto;
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  border: 1px solid #0a2342;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+
+.brandText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  line-height: 1.15;
 }
 
 .brandName {
-  font-weight: 700;
-  font-size: 18px;
-  letter-spacing: -0.01em;
-  color: var(--white);
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--brand-ink);
 }
 
-.brandAccent { color: var(--cyan-400); }
+.brandAccent { color: var(--brand-tech); }
 
+/* The ™ glyph already sits high in Inter, so it is sized up rather than raised. */
 .tm {
-  font-size: 0.5em;
-  font-weight: 600;
   margin-left: 1px;
+  font-size: 0.85em;
+  font-weight: 800;
+  color: var(--brand-ink);
+}
+
+.brandTagline {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--brand-tagline);
 }
 
 /* ---------- Header ---------- */
@@ -580,8 +622,9 @@ a { color: inherit; }
 
 /* ---------- Footer ---------- */
 .siteFooter {
-  background: var(--navy-900);
-  color: var(--on-navy-muted);
+  background: var(--footer-bg);
+  color: var(--footer-text);
+  border-top: 1px solid var(--footer-border);
   font-size: 14px;
 }
 
@@ -607,11 +650,11 @@ a { color: inherit; }
   transition: color 0.2s ease;
 }
 
-.footerLinks a:hover { color: var(--white); }
+.footerLinks a:hover { color: var(--footer-hover); }
 
 .copyright {
   font-size: 13px;
-  color: #8193b2;
+  color: var(--footer-fine);
 }
 
 /* ---------- Responsive ---------- */
@@ -624,11 +667,13 @@ a { color: inherit; }
 
 @media (max-width: 560px) {
   :root { --header-h: 60px; }
-  .container { padding: 0 16px; }
+  .container { padding-left: 16px; padding-right: 16px; }
   .headerNav { gap: 16px; }
   .appBrand { gap: 10px; }
   .appIcon { width: 32px; height: 32px; border-radius: 8px; }
   .appName { font-size: 16px; }
+  .brandMark { width: 46px; height: 46px; border-radius: 9px; }
+  .brandName { font-size: 20px; }
   .hero { padding: 20px 0 56px; }
   .heroTitle { font-size: 21px; }
   .heroSubtitle { font-size: 14px; }

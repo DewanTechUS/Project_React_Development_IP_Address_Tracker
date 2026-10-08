@@ -51,11 +51,11 @@ src/
 ├── App.tsx                  Page layout; wires the search to the data hook
 ├── main.tsx                 Entry point; ThemeProvider and global styles
 ├── index.css                Design tokens, themes and responsive styles
-├── assets/                  DewanTech™ logo and app icon (bundled by Vite)
+├── assets/                  DewanTech™ logo tile and app icon (bundled by Vite)
 ├── components/
 │   ├── Header.tsx           App header: icon, name, source link, theme switch
 │   ├── Footer.tsx           DewanTech™ footer: logo, links, copyright
-│   ├── Logo.tsx             DewanTech™ logo mark and wordmark
+│   ├── Logo.tsx             DewanTech™ lockup: logo tile, wordmark and tagline
 │   ├── SearchBar.tsx        Accessible search form
 │   ├── InfoCards.tsx        IP, location, timezone and ISP results
 │   ├── IpDetails.tsx        Network and location details, share link
